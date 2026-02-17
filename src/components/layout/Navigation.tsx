@@ -11,6 +11,7 @@ const patterns = [
   { name: 'context', path: '/context', label: 'React Context' },
   { name: 'useRef', path: '/use-ref', label: 'useRef' },
   { name: 'lifting-state', path: '/lifting-state', label: 'Lifting State' },
+  { name: 'strict-mode', path: '/strict-mode', label: 'Strict Mode' },
 ];
 
 export function Navigation() {

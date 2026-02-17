@@ -51,6 +51,12 @@ const patterns = [
         description: 'Choose correctly between useState and useRef for different scenarios.',
         difficulty: 'Intermediate',
       },
+      {
+        name: 'Strict Mode & useEffect Cleanup',
+        path: '/strict-mode',
+        description: 'See how Strict Mode double-mounts components to expose missing effect cleanup functions.',
+        difficulty: 'Intermediate',
+      },
     ],
   },
   {
@@ -95,7 +101,7 @@ export function Home() {
         </p>
         <div className="flex justify-center gap-4">
           <div className="text-center">
-            <div className="text-3xl font-bold text-blue-600">10</div>
+            <div className="text-3xl font-bold text-blue-600">11</div>
             <div className="text-sm text-gray-600">Patterns</div>
           </div>
           <div className="text-center">

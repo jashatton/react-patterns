@@ -16,11 +16,6 @@ export function ArrayMutationFixed() {
     setItems(items.filter((_, index) => index !== items.length - 1));
   };
 
-  const handleSort = () => {
-    // Correct: slice() creates a copy, then sort
-    setItems([...items].sort());
-  };
-
   return (
     <div>
       <RenderCounter name="ArrayMutationFixed" />
@@ -30,9 +25,6 @@ export function ArrayMutationFixed() {
           <Button onClick={handleAddItem}>Add Item</Button>
           <Button onClick={handleRemoveItem} variant="secondary">
             Remove Last
-          </Button>
-          <Button onClick={handleSort} variant="secondary">
-            Sort
           </Button>
         </div>
 

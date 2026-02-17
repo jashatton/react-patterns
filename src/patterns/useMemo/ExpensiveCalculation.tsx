@@ -68,7 +68,7 @@ export function ExpensiveCalculation() {
                 value={maxNumber}
                 onChange={(e) => setMaxNumber(Number(e.target.value))}
                 min="100"
-                max="10000"
+                max="5000000"
                 step="100"
                 className="w-full px-3 py-2 border border-gray-300 rounded text-gray-900"
               />
@@ -84,6 +84,8 @@ export function ExpensiveCalculation() {
             </div>
           </div>
         </div>
+
+        <div className="text-sm bg-yellow-200 p-2 border border-y-amber-400">Note: Performance varies by CPU specs.</div>
 
         <div className="p-4 bg-red-100 border-2 border-red-400 rounded">
           <div className="text-sm text-red-800 space-y-2">

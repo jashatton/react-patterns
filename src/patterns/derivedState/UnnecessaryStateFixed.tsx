@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { Button } from '../../components/shared/Button';
-import { RenderCounter } from '../../components/shared/RenderCounter';
+import {useState} from 'react';
+import {Button} from '../../components/shared/Button';
+import {RenderCounter} from '../../components/shared/RenderCounter';
 
 export function UnnecessaryStateFixed() {
   const [firstName, setFirstName] = useState('John');
@@ -14,7 +14,7 @@ export function UnnecessaryStateFixed() {
 
   return (
     <div>
-      <RenderCounter name="UnnecessaryStateFixed" />
+      <RenderCounter name="UnnecessaryStateFixed"/>
 
       <div className="space-y-4 mt-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -68,9 +68,13 @@ export function UnnecessaryStateFixed() {
               <li>All computed values (fullName, initials, characterCount) are calculated during render</li>
             </ol>
             <div className="mt-3 pt-3 border-t border-green-300">
-              <strong>Why it works:</strong> Instead of storing <code className="bg-green-200 px-1 rounded">fullName</code> in state,
-              we calculate it: <code className="bg-green-200 px-1 rounded">const fullName = `${`${firstName} ${lastName}`}`</code>.
-              This is always in sync, causes fewer re-renders (only one setState), and eliminates the useEffect entirely.
+              <strong>Why it works:</strong> Instead of storing <code
+              className="bg-green-200 px-1 rounded">fullName</code> in state,
+              we calculate it: <code className="bg-green-200 px-1 rounded">
+              {`const fullName = \`\${firstName} \${lastName}\``}
+            </code>.
+              This is always in sync, causes fewer re-renders (only one setState), and eliminates the useEffect
+              entirely.
               Simple calculations like this are fast enough that there's no performance concern.
             </div>
           </div>

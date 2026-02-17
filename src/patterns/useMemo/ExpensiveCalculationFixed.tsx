@@ -70,7 +70,7 @@ export function ExpensiveCalculationFixed() {
                 value={maxNumber}
                 onChange={(e) => setMaxNumber(Number(e.target.value))}
                 min="100"
-                max="10000"
+                max="5000000"
                 step="100"
                 className="w-full px-3 py-2 border border-gray-300 rounded text-gray-900"
               />
