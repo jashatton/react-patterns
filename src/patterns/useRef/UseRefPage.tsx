@@ -6,6 +6,8 @@ import { UseStateForNonRendering } from './UseStateForNonRendering';
 import { UseStateForNonRenderingFixed } from './UseStateForNonRenderingFixed';
 import { UseRefForRendering } from './UseRefForRendering';
 import { UseRefForRenderingFixed } from './UseRefForRenderingFixed';
+import { RefWithThirdParty } from './RefWithThirdParty';
+import { RefWithThirdPartyFixed } from './RefWithThirdPartyFixed';
 
 const useStateCode = `// BUG: Using useState for values that don't affect rendering
 const [renderCount, setRenderCount] = useState(0);
@@ -44,6 +46,46 @@ const increment = () => {
 };
 
 return <div>Count: {count}</div>;`;
+
+const refWithThirdPartyCode = `// BUG: Trying to use refs with react-popper
+const referenceRef = useRef(null);
+const popperRef = useRef(null);
+
+// This won't work! usePopper expects elements, not refs
+const { styles, attributes } = usePopper(
+  referenceRef.current, // ❌ Wrong - ref.current during render
+  popperRef.current,    // ❌ Wrong - popper can't track updates
+  { placement: 'top' }
+);
+
+return (
+  <>
+    <button ref={referenceRef}>Hover me</button>
+    <div ref={popperRef} style={styles.popper} {...attributes.popper}>
+      Tooltip won't position correctly!
+    </div>
+  </>
+);`;
+
+const refWithThirdPartyFixedCode = `// FIXED: Using state with react-popper
+const [referenceElement, setReferenceElement] = useState(null);
+const [popperElement, setPopperElement] = useState(null);
+
+// Now usePopper receives actual elements and tracks updates
+const { styles, attributes } = usePopper(
+  referenceElement, // ✓ Correct - state value
+  popperElement,    // ✓ Correct - popper can track changes
+  { placement: 'top' }
+);
+
+return (
+  <>
+    <button ref={setReferenceElement}>Hover me</button>
+    <div ref={setPopperElement} style={styles.popper} {...attributes.popper}>
+      Perfectly positioned!
+    </div>
+  </>
+);`;
 
 export function UseRefPage() {
   return (
@@ -121,12 +163,49 @@ export function UseRefPage() {
         </p>
       </ExplanationCard>
 
+      <ComparisonLayout
+        title="react-popper Requires State, Not Refs"
+        description="react-popper is a common case where developers expect to use refs but must use state. The usePopper hook needs to track DOM elements reactively to recalculate positioning."
+        wrong={
+          <div>
+            <RefWithThirdParty />
+            <CodeBlock code={refWithThirdPartyCode} title="Wrong: Using Refs with react-popper" />
+          </div>
+        }
+        right={
+          <div>
+            <RefWithThirdPartyFixed />
+            <CodeBlock code={refWithThirdPartyFixedCode} title="Right: Using State with react-popper" />
+          </div>
+        }
+      />
+
+      <ExplanationCard title="Why react-popper Needs State Instead of Refs" type="warning">
+        <p className="mb-2">
+          While refs seem like the obvious choice for accessing DOM elements, react-popper's <code>usePopper</code> hook
+          requires state for a critical reason: <strong>it needs to know when elements mount or change</strong>.
+        </p>
+        <p className="mb-2">
+          When you pass <code>ref.current</code> during render:
+        </p>
+        <ul className="list-disc list-inside ml-4 space-y-1 mb-2">
+          <li>You're violating React rules (can't access refs during render)</li>
+          <li>The value is often <code>null</code> initially, causing positioning to fail</li>
+          <li>usePopper can't detect when elements mount or unmount</li>
+          <li>Positioning won't update when the reference element moves</li>
+        </ul>
+        <p>
+          Using state with <code>setReferenceElement</code> and <code>setPopperElement</code> allows React to
+          trigger a re-render when elements become available, letting usePopper recalculate positioning properly.
+        </p>
+      </ExplanationCard>
+
       <ExplanationCard title="Common Use Cases" type="success">
         <div className="space-y-3">
           <div>
             <strong>Use useRef for:</strong>
             <ul className="list-disc list-inside ml-4 mt-1">
-              <li>DOM element references</li>
+              <li>DOM element references (imperative operations like focus, scroll)</li>
               <li>Storing timeout/interval IDs</li>
               <li>Tracking previous values (without triggering re-renders)</li>
               <li>Tracking render count or component lifecycle metadata</li>
@@ -140,6 +219,7 @@ export function UseRefPage() {
               <li>Form inputs and controlled components</li>
               <li>Conditional rendering logic</li>
               <li>Data that changes based on user interaction</li>
+              <li>DOM elements when libraries need reactive access (react-popper, Floating UI)</li>
             </ul>
           </div>
         </div>
