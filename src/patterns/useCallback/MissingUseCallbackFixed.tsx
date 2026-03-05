@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/purity */
 import { useState, memo, useCallback } from 'react';
 import { Button } from '../../components/shared/Button';
 import { RenderCounter } from '../../components/shared/RenderCounter';

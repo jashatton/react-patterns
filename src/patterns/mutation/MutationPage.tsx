@@ -6,6 +6,8 @@ import { ArrayMutation } from './ArrayMutation';
 import { ArrayMutationFixed } from './ArrayMutationFixed';
 import { ObjectMutation } from './ObjectMutation';
 import { ObjectMutationFixed } from './ObjectMutationFixed';
+import { StaleSetState } from './StaleSetState';
+import { StaleSetStateFixed } from './StaleSetStateFixed';
 
 const arrayMutationCode = `// BUG: Mutating the array directly
 const handleAddItem = () => {
@@ -20,13 +22,13 @@ items[0] = 'new value'; // Mutates in place`;
 
 const arrayMutationFixedCode = `// FIXED: Create new array with spread
 const handleAddItem = () => {
-  setItems([...items, \`Item \${items.length + 1}\`]);
+    setItems((current) => [...current, \`Item \${current.length + 1}\`]);
 };
 
 // Also correct:
-setItems([...items].sort()); // Copy first, then sort
-setItems(items.filter((_, i) => i !== 0)); // filter creates new array
-setItems(items.map((item, i) => i === 0 ? 'new value' : item));`;
+setItems((current) => [...current].sort()); // Copy first, then sort
+setItems((current) => current.filter((_, i) => i !== 0)); // filter creates new array
+setItems((current) => current.map((item, i) => i === 0 ? 'new value' : item));`
 
 const objectMutationCode = `// BUG: Mutating object directly
 const handleUpdate = () => {
@@ -40,23 +42,41 @@ const handleUpdateCity = () => {
   setUser(user); // Still the same reference!
 };`;
 
+const staleSetStateCode = `// BUG: All three calls read the same stale \`count\` from the closure
+const handleAddThree = () => {
+  setCount(count + 1); // count = 0 → schedules 1
+  setCount(count + 1); // count = 0 (stale!) → schedules 1 again
+  setCount(count + 1); // count = 0 (stale!) → schedules 1 again
+  // Result: count becomes 1, not 3
+};`;
+
+const staleSetStateFixedCode = `// FIXED: Functional updates chain off the latest queued value
+const handleAddThree = () => {
+  setCount((prev) => prev + 1); // 0 → 1
+  setCount((prev) => prev + 1); // 1 → 2
+  setCount((prev) => prev + 1); // 2 → 3
+  // Result: count correctly becomes 3
+};`;
+
 const objectMutationFixedCode = `// FIXED: Create new object with spread
-const handleUpdate = () => {
-  setUser({
-    ...user,
+const handleUpdateName = () => {
+  // FIXED: Create new object with spread operator
+  setUser((current) => ({
+    ...current,
     name: 'Jane Smith',
-  });
+  }));
 };
 
 // FIXED: Create new nested object
 const handleUpdateCity = () => {
-  setUser({
-    ...user,
+  // FIXED: Create new nested object
+  setUser((current) => ({
+    ...current,
     address: {
-      ...user.address,
+      ...current.address,
       city: 'Los Angeles',
     },
-  });
+  }));
 };`;
 
 export function MutationPage() {
@@ -159,6 +179,39 @@ export function MutationPage() {
         <p>
           For deeply nested updates, consider using libraries like Immer that simplify immutable updates, or
           restructure your state to be flatter.
+        </p>
+      </ExplanationCard>
+
+      <ComparisonLayout
+        title="Stale State in Back-to-Back setState Calls"
+        description="Calling setState multiple times in one handler using the current state value reads a stale snapshot — all calls see the same value, so only the last one takes effect."
+        wrong={
+          <div>
+            <StaleSetState />
+            <CodeBlock code={staleSetStateCode} title="Wrong: Reading Stale State" />
+          </div>
+        }
+        right={
+          <div>
+            <StaleSetStateFixed />
+            <CodeBlock code={staleSetStateFixedCode} title="Right: Functional Updates" />
+          </div>
+        }
+      />
+
+      <ExplanationCard title="When to Always Use Functional Updates" type="info">
+        <p className="mb-2">
+          Use the functional form <code>setState(prev =&gt; ...)</code> any time the new state depends on the
+          previous state — especially when:
+        </p>
+        <ul className="list-disc list-inside space-y-1">
+          <li>You call <code>setState</code> more than once in the same handler</li>
+          <li>You call <code>setState</code> inside <code>setTimeout</code>, <code>setInterval</code>, or async callbacks</li>
+          <li>Multiple event handlers might update the same state concurrently</li>
+        </ul>
+        <p className="mt-2">
+          React guarantees that the <code>prev</code> argument is always the latest committed (or queued) value,
+          never a stale closure snapshot.
         </p>
       </ExplanationCard>
 

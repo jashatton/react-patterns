@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/purity */
 import { useState, memo } from 'react';
 import { Button } from '../../components/shared/Button';
 import { RenderCounter } from '../../components/shared/RenderCounter';
 
 // Expensive child component wrapped in React.memo
-// Should only re-render when props actually change
+// Should only re-render when props actually change - but it doesn't because
+// handleItemClick is a new reference every render, defeating memo
 const ExpensiveList = memo(({ items, onItemClick }: { items: string[]; onItemClick: (item: string) => void }) => {
   // Simulate expensive rendering
   const startTime = performance.now();

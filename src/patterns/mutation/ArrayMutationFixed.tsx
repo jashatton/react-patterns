@@ -7,13 +7,13 @@ export function ArrayMutationFixed() {
 
   const handleAddItem = () => {
     // FIXED: Create a new array with spread operator
-    setItems([...items, `Item ${items.length + 1}`]);
+    setItems((current) => [...current, `Item ${current.length + 1}`]);
     console.log('New array created');
   };
 
   const handleRemoveItem = () => {
-    // Also correct: filter creates a new array
-    setItems(items.filter((_, index) => index !== items.length - 1));
+    // FIXED: filter creates a new array (no mutation)
+    setItems((current) => current.filter((_, index) => index !== current.length - 1));
   };
 
   return (
@@ -47,7 +47,7 @@ export function ArrayMutationFixed() {
             <div className="font-bold text-base">✅ Try This Fix:</div>
             <ol className="list-decimal list-inside space-y-1">
               <li>Click "Add Item" - it appears immediately! 🎉</li>
-              <li>Try "Remove Last" and "Sort" - all work instantly</li>
+              <li>Try "Remove Last" - it removes instantly</li>
               <li>No force re-render button needed</li>
             </ol>
             <div className="mt-3 pt-3 border-t border-green-300">

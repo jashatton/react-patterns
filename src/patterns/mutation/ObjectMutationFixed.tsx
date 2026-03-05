@@ -23,30 +23,30 @@ export function ObjectMutationFixed() {
 
   const handleUpdateName = () => {
     // FIXED: Create new object with spread operator
-    setUser({
-      ...user,
+    setUser((current) => ({
+      ...current,
       name: 'Jane Smith',
-    });
+    }));
   };
 
   const handleUpdateCity = () => {
     // FIXED: Create new nested object
-    setUser({
-      ...user,
+    setUser((current) => ({
+      ...current,
       address: {
-        ...user.address,
+        ...current.address,
         city: 'Los Angeles',
       },
-    });
+    }));
   };
 
   const handleUpdateMultiple = () => {
     // Can update multiple fields at once
-    setUser({
-      ...user,
+    setUser((current) => ({
+      ...current,
       name: 'Bob Johnson',
       email: 'bob@example.com',
-    });
+    }));
   };
 
   return (
