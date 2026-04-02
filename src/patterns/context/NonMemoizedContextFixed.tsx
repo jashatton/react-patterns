@@ -4,7 +4,7 @@ import { RenderCounter } from '../../components/shared/RenderCounter';
 
 interface UserContextType {
   user: { name: string };
-  setUser: (user: { name: string }) => void;
+  updateUser: (user: { name: string }) => void;
 }
 
 const UserContext = createContext<UserContextType | null>(null);
@@ -15,7 +15,12 @@ function UserProvider({ children }: { children: ReactNode }) {
 
   // FIXED: Memoize the context value!
   // Only creates a new object when 'user' actually changes
-  const value = useMemo(() => ({ user, setUser }), [user]);
+  const updateUser = (newUser: { name: string }) => {
+    // Probably do some validation or transformation here before updating user
+    setUser(newUser);
+  }
+
+  const value = useMemo(() => ({ user, updateUser }), [user]);
 
   return (
     <UserContext.Provider value={value}>
@@ -58,7 +63,7 @@ function UserDisplay() {
 }
 
 function UserControls() {
-  const { user, setUser } = useUser();
+  const { user, updateUser } = useUser();
 
   return (
     <div className="p-4 bg-blue-50 border border-blue-200 rounded">
@@ -66,7 +71,7 @@ function UserControls() {
       <div className="mt-2">
         <div className="font-semibold mb-2">Update User:</div>
         <Button
-          onClick={() => setUser({ name: user.name === 'John Doe' ? 'Jane Smith' : 'John Doe' })}
+          onClick={() => updateUser({ name: user.name === 'John Doe' ? 'Jane Smith' : 'John Doe' })}
           size="sm"
         >
           Toggle User

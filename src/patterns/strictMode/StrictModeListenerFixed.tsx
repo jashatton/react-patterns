@@ -1,11 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { RenderCounter } from '../../components/shared/RenderCounter';
 
 export function StrictModeListenerFixed() {
   const [keyCount, setKeyCount] = useState(0);
+  const didMount = useRef(false);
 
   // FIXED: Listener removed in cleanup so only one is ever active
   useEffect(() => {
+
+    if(didMount.current) {
+      console.warn('StrictModeListenerFixed: Component re-mounted, but cleanup should have removed the old listener!');
+    }
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Space') {
         e.preventDefault();

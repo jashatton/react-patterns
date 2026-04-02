@@ -2,55 +2,8 @@ import { PatternPage } from '../../components/layout/PatternPage';
 import { ComparisonLayout } from '../../components/layout/ComparisonLayout';
 import { ExplanationCard } from '../../components/layout/ExplanationCard';
 import { CodeBlock } from '../../components/layout/CodeBlock';
-import { InlineArrowFunctions } from './InlineArrowFunctions';
-import { InlineArrowFunctionsFixed } from './InlineArrowFunctionsFixed';
 import { StaleClosures } from './StaleClosures';
 import { StaleClosuresFixed } from './StaleClosuresFixed';
-
-const inlineArrowCode = `// BUG: New function on every render
-function ParentList() {
-  const [count, setCount] = useState(0);
-  const items = ['Apple', 'Banana', 'Cherry'];
-
-  return (
-    <div>
-      <button onClick={() => setCount(count + 1)}>Count: {count}</button>
-      {items.map((item) => (
-        <MemoizedItem
-          key={item}
-          item={item}
-          onDelete={(item) => console.log(item)}
-          {/* New function every render - breaks React.memo! */}
-        />
-      ))}
-    </div>
-  );
-}`;
-
-const inlineArrowFixedCode = `// FIXED: Stable function reference
-function ParentList() {
-  const [count, setCount] = useState(0);
-  const items = ['Apple', 'Banana', 'Cherry'];
-
-  // Same function reference every render!
-  const handleDelete = useCallback((item) => {
-    console.log(item);
-  }, []);
-
-  return (
-    <div>
-      <button onClick={() => setCount(count + 1)}>Count: {count}</button>
-      {items.map((item) => (
-        <MemoizedItem
-          key={item}
-          item={item}
-          onDelete={handleDelete}
-          {/* Now React.memo works correctly! */}
-        />
-      ))}
-    </div>
-  );
-}`;
 
 const staleClosureCode = `// BUG: Closure captures old state value
 function Counter() {
@@ -120,37 +73,6 @@ export function ArrowFunctionsPage() {
         <p>
           <strong>Key point:</strong> Inline arrow functions are fine for simple event handlers. Only optimize when
           passing to memoized components or dealing with async operations.
-        </p>
-      </ExplanationCard>
-
-      <ComparisonLayout
-        title="Inline Arrow Functions Breaking React.memo"
-        description="When you pass inline arrow functions as props to memoized components, the function is recreated on every render. React.memo sees a new reference and re-renders the child unnecessarily."
-        wrong={
-          <div>
-            <InlineArrowFunctions />
-            <CodeBlock code={inlineArrowCode} title="Wrong: Inline Arrow Functions" />
-          </div>
-        }
-        right={
-          <div>
-            <InlineArrowFunctionsFixed />
-            <CodeBlock code={inlineArrowFixedCode} title="Right: useCallback for Stability" />
-          </div>
-        }
-      />
-
-      <ExplanationCard title="When Inline Functions Are Fine" type="info">
-        <p className="mb-2">You DON'T need to worry about inline arrow functions when:</p>
-        <ul className="list-disc list-inside space-y-1">
-          <li>Passing to regular (non-memoized) components - they re-render anyway</li>
-          <li>Using in simple event handlers like <code>{`onClick={() => doSomething()}`}</code></li>
-          <li>Inside useEffect or other hooks where the function isn't passed as a prop</li>
-          <li>Performance profiling shows no issues</li>
-        </ul>
-        <p className="mt-2">
-          <strong>Only optimize</strong> when passing to React.memo'd components or when profiling shows actual performance
-          problems. Don't prematurely optimize!
         </p>
       </ExplanationCard>
 

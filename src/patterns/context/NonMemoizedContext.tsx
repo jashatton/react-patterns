@@ -4,7 +4,7 @@ import { RenderCounter } from '../../components/shared/RenderCounter';
 
 interface UserContextType {
   user: { name: string };
-  setUser: (user: { name: string }) => void;
+  updateUser: (user: { name: string }) => void;
 }
 
 const UserContext = createContext<UserContextType | null>(null);
@@ -16,7 +16,7 @@ function UserProvider({ children }: { children: ReactNode }) {
   // BUG: Creating new object on EVERY render!
   // Even when user hasn't changed, this is a new object reference
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, updateUser: setUser }}>
       <div>
         <div className="mb-4 p-3 bg-yellow-50 border border-yellow-300 rounded">
           <div className="text-sm">

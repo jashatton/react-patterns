@@ -80,6 +80,12 @@ const patterns = [
         description: 'Learn why keys matter and how wrong keys cause state bugs.',
         difficulty: 'Beginner',
       },
+      {
+        name: 'Controlled vs Uncontrolled',
+        path: '/forms',
+        description: 'Know when to use controlled inputs and why useEffect is the wrong way to bridge the two.',
+        difficulty: 'Beginner',
+      },
     ],
   },
 ];
@@ -101,7 +107,7 @@ export function Home() {
         </p>
         <div className="flex justify-center gap-4">
           <div className="text-center">
-            <div className="text-3xl font-bold text-blue-600">11</div>
+            <div className="text-3xl font-bold text-blue-600">12</div>
             <div className="text-sm text-gray-600">Patterns</div>
           </div>
           <div className="text-center">

@@ -11,7 +11,7 @@ export function PrematureMemoizationFixed() {
   // No useMemo needed for simple operations
 
   const fullName = `${firstName} ${lastName}`;
-  const initials = `${firstName[0]}${lastName[0]}`.toUpperCase();
+  const initials = `${firstName[0]}${lastName[0]} `.toUpperCase();
   const emailDomain = email.split('@')[1] || '';
   const isAdult = age >= 18;
   const greeting = `Hello, ${fullName}!`;

@@ -12,6 +12,7 @@ import { UseRefPage } from './patterns/useRef/UseRefPage';
 import { ContextPage } from './patterns/context/ContextPage';
 import { LiftingStatePage } from './patterns/liftingState/LiftingStatePage';
 import { StrictModePage } from './patterns/strictMode/StrictModePage';
+import { FormsPage } from './patterns/forms/FormsPage';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
             <Route path="/context" element={<ContextPage />} />
             <Route path="/lifting-state" element={<LiftingStatePage />} />
             <Route path="/strict-mode" element={<StrictModePage />} />
+            <Route path="/forms" element={<FormsPage />} />
           </Routes>
         </main>
       </div>

@@ -12,6 +12,7 @@ const patterns = [
   { name: 'useRef', path: '/use-ref', label: 'useRef' },
   { name: 'lifting-state', path: '/lifting-state', label: 'Lifting State' },
   { name: 'strict-mode', path: '/strict-mode', label: 'Strict Mode' },
+  { name: 'forms', path: '/forms', label: 'Controlled vs Uncontrolled' },
 ];
 
 export function Navigation() {

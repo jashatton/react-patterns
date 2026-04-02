@@ -24,8 +24,9 @@ export function StaleClosuresFixed() {
     setTimeout(() => {
       // Function receives the CURRENT state value!
       setCount((currentCount) => {
-        console.log('Incrementing from current state:', currentCount);
-        return currentCount + 1;
+        const updatedCount = currentCount + 1;
+        setMessage(`Count ${currentCount} updated to ${updatedCount} when timeout executed`);
+        return updatedCount;
       });
     }, 2000);
   };

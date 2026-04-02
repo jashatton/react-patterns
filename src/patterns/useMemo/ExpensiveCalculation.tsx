@@ -91,7 +91,7 @@ export function ExpensiveCalculation() {
           <div className="text-sm text-red-800 space-y-2">
             <div className="font-bold text-base">🐛 Try This Bug:</div>
             <ol className="list-decimal list-inside space-y-1">
-              <li>Set the number to 10000 (will take ~100-200ms to calculate)</li>
+              <li>Set the number to 2,000,000 (will take ~100-200ms to calculate)</li>
               <li>Watch the calculation time in the red text</li>
               <li>Now click "Increment Count" or "Toggle Theme" 🤯</li>
               <li>The expensive calculation runs again even though maxNumber didn't change!</li>
